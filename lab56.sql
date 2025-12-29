@@ -90,8 +90,7 @@ INSERT INTO TEACHERS (first_name, last_name, middle_name, birth_date, faculty_id
 (N'Сара', N'Джонсон', NULL, '1979-07-25', 1, 1, N'Веб-программирование', 110, 3, '2017-08-20')
 GO
 
-#лаба5
--- 1.  Функция для определения гражданства по отчеству
+    
 CREATE FUNCTION Сitizenship_f (@middle_name NVARCHAR(100))
 RETURNS NVARCHAR(20)
 AS
@@ -105,7 +104,6 @@ BEGIN
 END
 GO
 
--- 2. Функция для вывода нагрузки (суммы часов) для каждого преподавателя
 CREATE FUNCTION TEACHER_LOAD_F()
 RETURNS TABLE
 AS RETURN(
@@ -120,7 +118,6 @@ AS RETURN(
 )
 GO
 
-#лаба6
 CREATE TABLE COUNTS (
     Count_form INT,
     Count_stud INT
@@ -133,7 +130,6 @@ SELECT
     (SELECT COUNT(*) FROM STUDENTS)
 GO
 
--- 1.   оценка студента
 CREATE TRIGGER tr_student_score_update
 ON STUDENTS
 AFTER UPDATE
@@ -166,7 +162,6 @@ BEGIN
 END
 
 
--- 2.1  новоая форма обучения
 CREATE TRIGGER tr_form_insert
 ON STUDY_FORMS
 AFTER INSERT
@@ -178,7 +173,6 @@ BEGIN
 END
 
 
--- 2.2  удаление формы обучения
 CREATE TRIGGER tr_form_delete
 ON STUDY_FORMS
 INSTEAD OF DELETE
@@ -201,7 +195,7 @@ BEGIN
 END
 
 
--- 2.3  удаление студента
+
 CREATE TRIGGER tr_student_delete
 ON STUDENTS
 AFTER DELETE
