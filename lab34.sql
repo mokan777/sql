@@ -91,143 +91,143 @@ INSERT INTO TEACHERS (first_name, last_name, middle_name, birth_date, faculty_id
 (N'Джон', N'Смит', NULL, '1983-04-12', 2, 2, N'Базы данных', 150, 2, '2020-02-01'),
 (N'Сара', N'Джонсон', NULL, '1979-07-25', 1, 1, N'Веб-программирование', 110, 3, '2017-08-20')
 
-#laba3
+
 
 -- 1. 
-SELECT s.first_name,  s.last_name,  f.faculty_name, g.course_number, DATEDIFF(YEAR, s.birth_date, GETDATE()) AS age
-FROM STUDENTS s
-JOIN GROUPS g ON s.group_id = g.group_id
-JOIN FACULTIES f ON g.faculty_id = f.faculty_id
-JOIN STUDY_FORMS sf ON g.form_id = sf.form_id
-WHERE sf.form_name = N'заочная' AND DATEDIFF(YEAR, s.birth_date, GETDATE()) < 37
+SELECT STUDENTS.first_name, STUDENTS.last_name, FACULTIES.faculty_name, GROUPS.course_number, DATEDIFF(YEAR, STUDENTS.birth_date, GETDATE()) AS age
+FROM STUDENTS
+JOIN GROUPS ON STUDENTS.group_id = GROUPS.group_id
+JOIN FACULTIES ON GROUPS.faculty_id = FACULTIES.faculty_id
+JOIN STUDY_FORMS ON GROUPS.form_id = STUDY_FORMS.form_id
+WHERE STUDY_FORMS.form_name = N'заочная' AND DATEDIFF(YEAR, STUDENTS.birth_date, GETDATE()) < 37
 
 -- 2. 
-SELECT f.faculty_name, COUNT(s.student_id) AS student_count
-FROM FACULTIES f
-LEFT JOIN GROUPS g ON f.faculty_id = g.faculty_id
-LEFT JOIN STUDENTS s ON g.group_id = s.group_id
-GROUP BY f.faculty_name
+SELECT FACULTIES.faculty_name, COUNT(STUDENTS.student_id) AS student_count
+FROM FACULTIES
+LEFT JOIN GROUPS ON FACULTIES.faculty_id = GROUPS.faculty_id
+LEFT JOIN STUDENTS ON GROUPS.group_id = STUDENTS.group_id
+GROUP BY FACULTIES.faculty_name
 
 -- 3. 
-SELECT sf.form_name, COUNT(s.student_id) AS student_count
-FROM STUDY_FORMS sf
-LEFT JOIN GROUPS g ON sf.form_id = g.form_id
-LEFT JOIN STUDENTS s ON g.group_id = s.group_id
-GROUP BY sf.form_name
+SELECT STUDY_FORMS.form_name, COUNT(STUDENTS.student_id) AS student_count
+FROM STUDY_FORMS
+LEFT JOIN GROUPS ON STUDY_FORMS.form_id = GROUPS.form_id
+LEFT JOIN STUDENTS ON GROUPS.group_id = STUDENTS.group_id
+GROUP BY STUDY_FORMS.form_name
 
 -- 4. 
-SELECT f.faculty_name, AVG(DATEDIFF(YEAR, s.birth_date, DATEFROMPARTS(YEAR(GETDATE()), 12, 31))) AS avg_age
-FROM STUDENTS s
-JOIN GROUPS g ON s.group_id = g.group_id
-JOIN FACULTIES f ON g.faculty_id = f.faculty_id
-GROUP BY f.faculty_name
+SELECT FACULTIES.faculty_name, AVG(DATEDIFF(YEAR, STUDENTS.birth_date, DATEFROMPARTS(YEAR(GETDATE()), 12, 31))) AS avg_age
+FROM STUDENTS
+JOIN GROUPS ON STUDENTS.group_id = GROUPS.group_id
+JOIN FACULTIES ON GROUPS.faculty_id = FACULTIES.faculty_id
+GROUP BY FACULTIES.faculty_name
 
 -- 5. 
-SELECT s.first_name, s.last_name, s.admission_date, f.faculty_name, g.course_number, sf.form_name
-FROM STUDENTS s
-JOIN GROUPS g ON s.group_id = g.group_id
-JOIN FACULTIES f ON g.faculty_id = f.faculty_id
-JOIN STUDY_FORMS sf ON g.form_id = sf.form_id
-WHERE s.middle_name IS NULL
+SELECT STUDENTS.first_name, STUDENTS.last_name, STUDENTS.admission_date, FACULTIES.faculty_name, GROUPS.course_number, STUDY_FORMS.form_name
+FROM STUDENTS
+JOIN GROUPS ON STUDENTS.group_id = GROUPS.group_id
+JOIN FACULTIES ON GROUPS.faculty_id = FACULTIES.faculty_id
+JOIN STUDY_FORMS ON GROUPS.form_id = STUDY_FORMS.form_id
+WHERE STUDENTS.middle_name IS NULL
 
 -- 6. 
-SELECT TOP 1 f.faculty_name, COUNT(s.student_id) AS student_count
-FROM STUDENTS s
-JOIN GROUPS g ON s.group_id = g.group_id
-JOIN FACULTIES f ON g.faculty_id = f.faculty_id
-WHERE YEAR(s.admission_date) = 2015
-GROUP BY f.faculty_name
+SELECT TOP 1 FACULTIES.faculty_name, COUNT(STUDENTS.student_id) AS student_count
+FROM STUDENTS
+JOIN GROUPS ON STUDENTS.group_id = GROUPS.group_id
+JOIN FACULTIES ON GROUPS.faculty_id = FACULTIES.faculty_id
+WHERE YEAR(STUDENTS.admission_date) = 2015
+GROUP BY FACULTIES.faculty_name
 ORDER BY student_count DESC
 
 -- 7. 
-SELECT  f.faculty_name, sf.form_name, COUNT(s.student_id) AS student_count
-FROM STUDENTS s
-JOIN GROUPS g ON s.group_id = g.group_id
-JOIN FACULTIES f ON g.faculty_id = f.faculty_id
-JOIN STUDY_FORMS sf ON g.form_id = sf.form_id
-WHERE YEAR(s.admission_date) = 2014
-GROUP BY f.faculty_name, sf.form_name
+SELECT FACULTIES.faculty_name, STUDY_FORMS.form_name, COUNT(STUDENTS.student_id) AS student_count
+FROM STUDENTS
+JOIN GROUPS ON STUDENTS.group_id = GROUPS.group_id
+JOIN FACULTIES ON GROUPS.faculty_id = FACULTIES.faculty_id
+JOIN STUDY_FORMS ON GROUPS.form_id = STUDY_FORMS.form_id
+WHERE YEAR(STUDENTS.admission_date) = 2014
+GROUP BY FACULTIES.faculty_name, STUDY_FORMS.form_name
 
 -- 8. 
-SELECT DISTINCT  f.faculty_name
-FROM FACULTIES f
-JOIN GROUPS g ON f.faculty_id = g.faculty_id
-JOIN STUDY_FORMS sf ON g.form_id = sf.form_id
-WHERE sf.form_name = N'заочная'
+SELECT DISTINCT FACULTIES.faculty_name
+FROM FACULTIES
+JOIN GROUPS ON FACULTIES.faculty_id = GROUPS.faculty_id
+JOIN STUDY_FORMS ON GROUPS.form_id = STUDY_FORMS.form_id
+WHERE STUDY_FORMS.form_name = N'заочная'
 
 -- 9. 
-SELECT DISTINCT f.faculty_name, sf.form_name, g.course_number
-FROM FACULTIES f
-JOIN GROUPS g ON f.faculty_id = g.faculty_id
-JOIN STUDY_FORMS sf ON g.form_id = sf.form_id
-ORDER BY f.faculty_name, sf.form_name, g.course_number
+SELECT DISTINCT FACULTIES.faculty_name, STUDY_FORMS.form_name, GROUPS.course_number
+FROM FACULTIES
+JOIN GROUPS ON FACULTIES.faculty_id = GROUPS.faculty_id
+JOIN STUDY_FORMS ON GROUPS.form_id = STUDY_FORMS.form_id
+ORDER BY FACULTIES.faculty_name, STUDY_FORMS.form_name, GROUPS.course_number
 
 -- 10. 
-SELECT  f.faculty_name, sf.form_name, COUNT(s.student_id) AS student_count
-FROM FACULTIES f
-JOIN GROUPS g ON f.faculty_id = g.faculty_id
-JOIN STUDY_FORMS sf ON g.form_id = sf.form_id
-LEFT JOIN STUDENTS s ON g.group_id = s.group_id
-GROUP BY f.faculty_name, sf.form_name
-ORDER BY f.faculty_name, sf.form_name
+SELECT FACULTIES.faculty_name, STUDY_FORMS.form_name, COUNT(STUDENTS.student_id) AS student_count
+FROM FACULTIES
+JOIN GROUPS ON FACULTIES.faculty_id = GROUPS.faculty_id
+JOIN STUDY_FORMS ON GROUPS.form_id = STUDY_FORMS.form_id
+LEFT JOIN STUDENTS ON GROUPS.group_id = STUDENTS.group_id
+GROUP BY FACULTIES.faculty_name, STUDY_FORMS.form_name
+ORDER BY FACULTIES.faculty_name, STUDY_FORMS.form_name
 
 -- 11. 
-SELECT  f.faculty_name, sf.form_name, COUNT(s.student_id) AS student_count
-FROM FACULTIES f
-JOIN GROUPS g ON f.faculty_id = g.faculty_id
-JOIN STUDY_FORMS sf ON g.form_id = sf.form_id
-LEFT JOIN STUDENTS s ON g.group_id = s.group_id
-WHERE g.course_number IN (1, 3)
-GROUP BY f.faculty_name, sf.form_name
+SELECT FACULTIES.faculty_name, STUDY_FORMS.form_name, COUNT(STUDENTS.student_id) AS student_count
+FROM FACULTIES
+JOIN GROUPS ON FACULTIES.faculty_id = GROUPS.faculty_id
+JOIN STUDY_FORMS ON GROUPS.form_id = STUDY_FORMS.form_id
+LEFT JOIN STUDENTS ON GROUPS.group_id = STUDENTS.group_id
+WHERE GROUPS.course_number IN (1, 3)
+GROUP BY FACULTIES.faculty_name, STUDY_FORMS.form_name
 
 -- 12.
-SELECT  f.faculty_name, g.course_number, COUNT(s.student_id) AS foreign_student_count
-FROM FACULTIES f
-JOIN GROUPS g ON f.faculty_id = g.faculty_id
-LEFT JOIN STUDENTS s ON g.group_id = s.group_id AND s.middle_name IS NULL
-GROUP BY f.faculty_name, g.course_number
-ORDER BY f.faculty_name, g.course_number
+SELECT FACULTIES.faculty_name, GROUPS.course_number, COUNT(STUDENTS.student_id) AS foreign_student_count
+FROM FACULTIES
+JOIN GROUPS ON FACULTIES.faculty_id = GROUPS.faculty_id
+LEFT JOIN STUDENTS ON GROUPS.group_id = STUDENTS.group_id AND STUDENTS.middle_name IS NULL
+GROUP BY FACULTIES.faculty_name, GROUPS.course_number
+ORDER BY FACULTIES.faculty_name, GROUPS.course_number
 
 -- 13. 
-SELECT  f.faculty_name, g.course_number, COUNT(s.student_id) AS student_count
-FROM FACULTIES f
-JOIN GROUPS g ON f.faculty_id = g.faculty_id
-JOIN STUDENTS s ON g.group_id = s.group_id
-WHERE s.avg_score > 7.5
-GROUP BY f.faculty_name, g.course_number
-ORDER BY f.faculty_name, g.course_number
+SELECT FACULTIES.faculty_name, GROUPS.course_number, COUNT(STUDENTS.student_id) AS student_count
+FROM FACULTIES
+JOIN GROUPS ON FACULTIES.faculty_id = GROUPS.faculty_id
+JOIN STUDENTS ON GROUPS.group_id = STUDENTS.group_id
+WHERE STUDENTS.avg_score > 7.5
+GROUP BY FACULTIES.faculty_name, GROUPS.course_number
+ORDER BY FACULTIES.faculty_name, GROUPS.course_number
 
 -- 14. 
-SELECT  f.faculty_name, sf.form_name, COUNT(s.student_id) AS student_count
-FROM FACULTIES f
-JOIN GROUPS g ON f.faculty_id = g.faculty_id
-JOIN STUDY_FORMS sf ON g.form_id = sf.form_id
-JOIN STUDENTS s ON g.group_id = s.group_id
-WHERE DATEDIFF(YEAR, s.birth_date, GETDATE()) > 45
-GROUP BY f.faculty_name, sf.form_name
-ORDER BY f.faculty_name, sf.form_name
+SELECT FACULTIES.faculty_name, STUDY_FORMS.form_name, COUNT(STUDENTS.student_id) AS student_count
+FROM FACULTIES
+JOIN GROUPS ON FACULTIES.faculty_id = GROUPS.faculty_id
+JOIN STUDY_FORMS ON GROUPS.form_id = STUDY_FORMS.form_id
+JOIN STUDENTS ON GROUPS.group_id = STUDENTS.group_id
+WHERE DATEDIFF(YEAR, STUDENTS.birth_date, GETDATE()) > 45
+GROUP BY FACULTIES.faculty_name, STUDY_FORMS.form_name
+ORDER BY FACULTIES.faculty_name, STUDY_FORMS.form_name
 
 -- 15. 
-SELECT  f.faculty_name, sf.form_name, g.course_number, COUNT(s.student_id) AS student_count
-FROM FACULTIES f
-JOIN GROUPS g ON f.faculty_id = g.faculty_id
-JOIN STUDY_FORMS sf ON g.form_id = sf.form_id
-JOIN STUDENTS s ON g.group_id = s.group_id
-WHERE DATEDIFF(YEAR, s.birth_date, GETDATE()) < 27
-GROUP BY f.faculty_name, sf.form_name, g.course_number
-ORDER BY f.faculty_name, sf.form_name, g.course_number
+SELECT FACULTIES.faculty_name, STUDY_FORMS.form_name, GROUPS.course_number, COUNT(STUDENTS.student_id) AS student_count
+FROM FACULTIES
+JOIN GROUPS ON FACULTIES.faculty_id = GROUPS.faculty_id
+JOIN STUDY_FORMS ON GROUPS.form_id = STUDY_FORMS.form_id
+JOIN STUDENTS ON GROUPS.group_id = STUDENTS.group_id
+WHERE DATEDIFF(YEAR, STUDENTS.birth_date, GETDATE()) < 27
+GROUP BY FACULTIES.faculty_name, STUDY_FORMS.form_name, GROUPS.course_number
+ORDER BY FACULTIES.faculty_name, STUDY_FORMS.form_name, GROUPS.course_number
 
 -- 16. 
-SELECT  f.faculty_name, COUNT(s.student_id) AS student_count
-FROM FACULTIES f
-JOIN GROUPS g ON f.faculty_id = g.faculty_id
-JOIN STUDENTS s ON g.group_id = s.group_id
-WHERE s.last_name LIKE N'С%'
-GROUP BY f.faculty_name
+SELECT FACULTIES.faculty_name, COUNT(STUDENTS.student_id) AS student_count
+FROM FACULTIES
+JOIN GROUPS ON FACULTIES.faculty_id = GROUPS.faculty_id
+JOIN STUDENTS ON GROUPS.group_id = STUDENTS.group_id
+WHERE STUDENTS.last_name LIKE N'С%'
+GROUP BY FACULTIES.faculty_name
 ORDER BY student_count ASC
 
-#laba4
--- 1. 
+
+
 CREATE PROCEDURE NUM_ST_FACUL_TUP_OB
     @FACULT_NAME NVARCHAR(50),
     @TUP_OB_NAME NVARCHAR(20)
@@ -236,12 +236,12 @@ BEGIN
     SET NOCOUNT ON
     DECLARE @NUM_ST INT
     
-    SELECT @NUM_ST = COUNT(s.student_id)
-    FROM STUDENTS s
-    JOIN GROUPS g ON s.group_id = g.group_id
-    JOIN FACULTIES f ON g.faculty_id = f.faculty_id
-    JOIN STUDY_FORMS sf ON g.form_id = sf.form_id
-    WHERE f.faculty_name = @FACULT_NAME AND sf.form_name = @TUP_OB_NAME
+    SELECT @NUM_ST = COUNT(STUDENTS.student_id)
+    FROM STUDENTS
+    JOIN GROUPS ON STUDENTS.group_id = GROUPS.group_id
+    JOIN FACULTIES ON GROUPS.faculty_id = FACULTIES.faculty_id
+    JOIN STUDY_FORMS ON GROUPS.form_id = STUDY_FORMS.form_id
+    WHERE FACULTIES.faculty_name = @FACULT_NAME AND STUDY_FORMS.form_name = @TUP_OB_NAME
 
     PRINT N'Факультет: ' + @FACULT_NAME
     PRINT N'Форма обучения: ' + @TUP_OB_NAME
@@ -250,42 +250,42 @@ END
 GO
 
 
--- 2. 
+
 CREATE PROCEDURE NUM_ST_PREDMET_FACULTET
 AS
 BEGIN
     SET NOCOUNT ON
 
-    DECLARE @PRED_FPK INT, @PRED_FPM INT, @PRED_FPI INT,  @NUM_PREDMET INT, @NUM_PREDMET_FACULT INT
+    DECLARE @PRED_FPK INT, @PRED_FPM INT, @PRED_FPI INT, @NUM_PREDMET INT, @NUM_PREDMET_FACULT INT
 
-    -- Количество предметов на ФПК 
-    SELECT @PRED_FPK = COUNT(DISTINCT subject_name)
-    FROM TEACHERS t
-    JOIN FACULTIES f ON t.faculty_id = f.faculty_id
-    WHERE f.faculty_name = N'ФПК'
+    
+    SELECT @PRED_FPK = COUNT(DISTINCT TEACHERS.subject_name)
+    FROM TEACHERS
+    JOIN FACULTIES ON TEACHERS.faculty_id = FACULTIES.faculty_id
+    WHERE FACULTIES.faculty_name = N'ФПК'
 
-    -- Количество предметов на ФПМ
-    SELECT @PRED_FPM = COUNT(DISTINCT subject_name)
-    FROM TEACHERS t
-    JOIN FACULTIES f ON t.faculty_id = f.faculty_id
-    WHERE f.faculty_name = N'ФПМ'
 
-    -- Количество предметов на ФПИ
-    SELECT @PRED_FPI = COUNT(DISTINCT subject_name)
-    FROM TEACHERS t
-    JOIN FACULTIES f ON t.faculty_id = f.faculty_id
-    WHERE f.faculty_name = N'ФПИ'
+    SELECT @PRED_FPM = COUNT(DISTINCT TEACHERS.subject_name)
+    FROM TEACHERS
+    JOIN FACULTIES ON TEACHERS.faculty_id = FACULTIES.faculty_id
+    WHERE FACULTIES.faculty_name = N'ФПМ'
 
-    -- Общее количество уникальных предметов
-    SELECT @NUM_PREDMET = COUNT(DISTINCT subject_name)
+
+    SELECT @PRED_FPI = COUNT(DISTINCT TEACHERS.subject_name)
+    FROM TEACHERS
+    JOIN FACULTIES ON TEACHERS.faculty_id = FACULTIES.faculty_id
+    WHERE FACULTIES.faculty_name = N'ФПИ'
+
+
+    SELECT @NUM_PREDMET = COUNT(DISTINCT TEACHERS.subject_name)
     FROM TEACHERS
 
-    -- Количество дублирующихся названий предметов 
+
     SELECT @NUM_PREDMET_FACULT = COUNT(*)
     FROM (
-        SELECT subject_name
+        SELECT TEACHERS.subject_name
         FROM TEACHERS
-        GROUP BY subject_name
+        GROUP BY TEACHERS.subject_name
         HAVING COUNT(*) > 1
     ) AS Duplicates
 
@@ -311,11 +311,11 @@ BEGIN
 
     DECLARE @group_id INT, @faculty_id INT, @form_id INT
 
-    -- Находим faculty_id и form_id
+
     SELECT @faculty_id = faculty_id FROM FACULTIES WHERE faculty_name = @FACULT_NAME
     SELECT @form_id = form_id FROM STUDY_FORMS WHERE form_name = @TUP_OB_NAME
 
-    -- Проверяем существование группы с указанным факультетом и формой обучения на 1 курсе
+
     SELECT @group_id = group_id
     FROM GROUPS
     WHERE faculty_id = @faculty_id AND form_id = @form_id AND course_number = 1
@@ -326,7 +326,7 @@ BEGIN
         RETURN
     END
 
-    -- Добавляем студента в таблицу STUDENTS
+    
     INSERT INTO STUDENTS (first_name, last_name, middle_name, birth_date, group_id, admission_date)
     VALUES (@NAME_ST_3, @SURNAME_ST_3, @T_NAME_ST_3, @BIRTH_DATE, @group_id, @WORK_DATE)
 
